@@ -153,3 +153,4 @@ Thumbs.db
 certs/
 *.pem
 *.key
+.env
