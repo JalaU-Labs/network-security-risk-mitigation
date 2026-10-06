@@ -1,7 +1,7 @@
 [project]
 name = "network-security-risk-mitigation"
 version = "0.1.0"
-description = "Add your description here"
+description = "Network security risk mitigation lab for Computer Networks 2"
 authors = [
     { name = "Diego Alejandro Botina", email = "code.with.botina@gmail.com" }
 ]
