@@ -6,7 +6,7 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpass}
       MYSQL_DATABASE: ${MYSQL_DATABASE:-labdb}
     networks:
-      - lab6-net
+      - backend
     volumes:
       - mysql_data:/var/lib/mysql
 
@@ -17,8 +17,9 @@ services:
     container_name: nginx
     ports:
       - "80:80"
+      - "443:443"
     networks:
-      - lab6-net
+      - frontend
     depends_on:
       - api
 
@@ -31,7 +32,8 @@ services:
       MODULE_NAME: main
       VARIABLE_NAME: app
     networks:
-      - lab6-net
+      - frontend
+      - backend
     depends_on:
       - mysql
       - redis
@@ -40,20 +42,28 @@ services:
     image: redis:7
     container_name: redis
     networks:
-      - lab6-net
+      - backend
 
   admin:
     image: nicolaka/netshoot
     container_name: admin
     networks:
-      - lab6-net
+      - frontend
     stdin_open: true
     tty: true
     command: /bin/bash
 
 networks:
-  lab6-net:
+  frontend:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+  backend:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.21.0.0/16
 
 volumes:
   mysql_data:
