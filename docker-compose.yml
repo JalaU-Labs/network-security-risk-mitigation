@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpass}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-labdb}
+    networks:
+      - lab6-net
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  nginx:
+    build:
+      context: ./docker/nginx
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    networks:
+      - lab6-net
+    depends_on:
+      - api
+
+  api:
+    build:
+      context: ./docker/api
+      dockerfile: Dockerfile
+    environment:
+      MODULE_NAME: main
+      VARIABLE_NAME: app
+    networks:
+      - lab6-net
+    depends_on:
+      - mysql
+      - redis
+
+  redis:
+    image: redis:7
+    networks:
+      - lab6-net
+
+  admin:
+    image: nicolaka/netshoot
+    networks:
+      - lab6-net
+    stdin_open: true
+    tty: true
+    command: /bin/bash
+
+networks:
+  lab6-net:
+    driver: bridge
+
+volumes:
+  mysql_data:
