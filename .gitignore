@@ -149,9 +149,6 @@ docker-compose.override.yml
 .DS_Store
 Thumbs.db
 
-# uv
-uv.lock
-
 # Project specific
 certs/
 *.pem
