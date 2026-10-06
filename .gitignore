@@ -155,3 +155,4 @@ certs/
 *.key
 .env
 logs/
+docker/nginx/certs/
