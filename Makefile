@@ -27,3 +27,7 @@ clean:
 scan:
 	@echo "Running reconnaissance scans..."
 	@bash scripts/scan.sh
+
+validate:
+	@echo "Validating mitigations..."
+	@bash scripts/validate.sh
