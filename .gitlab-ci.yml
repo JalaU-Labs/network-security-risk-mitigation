@@ -38,7 +38,11 @@ build:
   before_script:
     - apk add --no-cache openssl
     - mkdir -p docker/nginx/certs
-    - openssl req -x509 -nodes -days 1 -newkey rsa:2048 -keyout docker/nginx/certs/key.pem -out docker/nginx/certs/cert.pem -subj "/CN=localhost"
+    - >
+      openssl req -x509 -nodes -days 1 -newkey rsa:2048
+      -keyout docker/nginx/certs/key.pem
+      -out docker/nginx/certs/cert.pem
+      -subj "/CN=localhost"
   script:
     - docker build -t lab6-api:ci ./docker/api
     - docker build -t lab6-nginx:ci ./docker/nginx
