@@ -1,0 +1,44 @@
+stages:
+  - lint
+  - test
+  - build
+
+variables:
+  UV_VERSION: "0.12.23"
+  PYTHON_VERSION: "3.14"
+
+default:
+  image: python:3.14-slim
+
+lint:
+  stage: lint
+  before_script:
+    - pip install uv==$UV_VERSION
+    - uv sync --all-extras --dev
+  script:
+    - uv run ruff check .
+    - uv run ruff format --check .
+    - uv run yamllint -c .yamllint.yml docker-compose.yml .gitlab-ci.yml
+
+test:
+  stage: test
+  before_script:
+    - pip install uv==$UV_VERSION
+    - uv sync --all-extras --dev
+  script:
+    - uv run pytest -v --cov=src --cov-report=term-missing
+
+build:
+  stage: build
+  image: docker:27
+  services:
+    - docker:27-dind
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"
+  before_script:
+    - apk add --no-cache openssl
+    - mkdir -p docker/nginx/certs
+    - openssl req -x509 -nodes -days 1 -newkey rsa:2048 -keyout docker/nginx/certs/key.pem -out docker/nginx/certs/cert.pem -subj "/CN=localhost"
+  script:
+    - docker build -t lab6-api:ci ./docker/api
+    - docker build -t lab6-nginx:ci ./docker/nginx
