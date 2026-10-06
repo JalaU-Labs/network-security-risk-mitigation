@@ -19,4 +19,6 @@ build-backend = "uv_build"
 dev = [
     "pytest>=9.1.1",
     "pytest-cov>=7.1.0",
+    "ruff>=0.16.10",
+    "yamllint>=1.38.0",
 ]

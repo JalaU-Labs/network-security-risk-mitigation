@@ -1,4 +1,4 @@
-.PHONY: setup up down scan test lint clean
+.PHONY: setup up down scan validate test lint clean
 
 setup:
 	uv sync
@@ -11,23 +11,23 @@ down:
 
 scan:
 	@echo "Running reconnaissance scans..."
-	# Placeholder for scan commands
-
-test:
-	uv run pytest
-
-lint:
-	@echo "Linting YAML and Dockerfiles..."
-	# Placeholder for lint commands
-
-clean:
-	docker compose down -v
-	rm -rf .venv
-
-scan:
-	@echo "Running reconnaissance scans..."
 	@bash scripts/scan.sh
 
 validate:
 	@echo "Validating mitigations..."
 	@bash scripts/validate.sh
+
+test:
+	uv run pytest -v
+
+lint:
+	@echo "Linting Python with Ruff..."
+	uv run ruff check .
+	uv run ruff format --check .
+	@echo "Linting YAML with Yamllint..."
+	uv run yamllint -c .yamllint.yml docker-compose.yml .github/workflows/ .gitlab-ci.yml
+
+clean:
+	docker compose down -v
+	rm -rf .venv
+	rm -rf logs/
