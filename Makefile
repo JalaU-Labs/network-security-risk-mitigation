@@ -25,7 +25,12 @@ lint:
 	uv run ruff check .
 	uv run ruff format --check .
 	@echo "Linting YAML with Yamllint..."
-	uv run yamllint -c .yamllint.yml docker-compose.yml .github/workflows/ .gitlab-ci.yml
+	@files=""; \
+	for f in docker-compose.yml .yamllint.yml .github/workflows/*.yml .gitlab-ci.yml; do \
+		[ -f "$$f" ] && files="$$files $$f"; \
+	done; \
+	if [ -n "$$files" ]; then uv run yamllint -c .yamllint.yml $$files; \
+	else echo "No YAML files to lint."; fi
 
 clean:
 	docker compose down -v
