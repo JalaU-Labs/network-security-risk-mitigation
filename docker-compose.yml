@@ -1,8 +1,7 @@
-version: '3.8'
-
 services:
   mysql:
     image: mysql:8
+    container_name: mysql
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpass}
       MYSQL_DATABASE: ${MYSQL_DATABASE:-labdb}
@@ -15,6 +14,7 @@ services:
     build:
       context: ./docker/nginx
       dockerfile: Dockerfile
+    container_name: nginx
     ports:
       - "80:80"
     networks:
@@ -26,6 +26,7 @@ services:
     build:
       context: ./docker/api
       dockerfile: Dockerfile
+    container_name: api
     environment:
       MODULE_NAME: main
       VARIABLE_NAME: app
@@ -37,11 +38,13 @@ services:
 
   redis:
     image: redis:7
+    container_name: redis
     networks:
       - lab6-net
 
   admin:
     image: nicolaka/netshoot
+    container_name: admin
     networks:
       - lab6-net
     stdin_open: true
