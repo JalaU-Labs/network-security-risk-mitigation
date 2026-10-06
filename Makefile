@@ -23,3 +23,7 @@ lint:
 clean:
 	docker compose down -v
 	rm -rf .venv
+
+scan:
+	@echo "Running reconnaissance scans..."
+	@bash scripts/scan.sh
